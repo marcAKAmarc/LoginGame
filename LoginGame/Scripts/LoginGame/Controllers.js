@@ -26,7 +26,16 @@
         GameModel.layout.screenLayout.heightPercent = 100 / rows;
     }
 
-
+    this.UpdateRemainingLoginTime = function (screen, gameModel) {
+        loginScreen = this.GetLoginScreen(gameModel, screen.id);
+        if(loginScreen.state != 'Locked' && loginScreen.state != 'Success')
+            loginScreen.currentTimeLimit += 1;
+        if (loginScreen.currentTimeLimit > loginScreen.timeLimit) {
+            loginScreen.timeLimit = loginScreen.currentTimeLimit;
+            gameModel.gameOver = true;
+        }
+        return loginScreen.currentTimeLimit;
+    }
 }
 
 function PolicyController() {
@@ -82,7 +91,7 @@ function PolicyController() {
         if (policy.passwordRules.passwordUpperCasesRequired > 0)
             requirementStrings.push(policy.passwordRules.passwordUpperCasesRequired + ' upper case character(s)');
         if (policy.passwordRules.passwordSymbolsRequired > 0)
-            requirementStrings.push(policy.passwordRules.passwordSymbolsRequired + ' upper case character(s)');
+            requirementStrings.push(policy.passwordRules.passwordSymbolsRequired + ' symbol(s)');
         if (policy.passwordRules.passwordNumbersRequired > 0)
             requirementStrings.push(policy.passwordRules.passwordNumbersRequired + ' numeric character(s)')
 

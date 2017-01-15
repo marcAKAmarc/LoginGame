@@ -1,5 +1,6 @@
 ﻿function Presentation(_gameController, _screenController, _policyController) {
     var _self = this;
+    var hasGameOvered = false;
     //var gameController = _gameController;
     var screenController = _screenController;
     var policyController = _policyController;
@@ -170,6 +171,8 @@
         //matchingScreen = gameController.GetLoginScreen(gameModel,$(screenContainer).attr('id'));
         errors.push.apply(errors, screenController.ValidateSignIn(matchingScreen, vm.username, vm.password));
 
+        
+
         if (errors.length > 0) {
             $(loginpanel).find('.errors').html(errors.join('\n'));
             $(loginpanel).find('.errors').attr('style', 'display:inline-box;');
@@ -218,4 +221,41 @@
         screenController.SubmitResetViewModel(matchingScreen, vm);
         ClearResetViewModelFromScreenContainer(screenContainer);
     }
+
+    this.updateRemainingLoginTimer = function (screen) {
+        var presentationScreen = $('#' + screen.id.toString());
+        var percent = (100 * screen.currentTimeLimit / screen.timeLimit);
+        var height = percent > 50 ? "10px":"7px";
+        height = percent > 75 ? "15px" : height;
+        var color = percent > 50 ? "orange" : "#b1b1b1";
+        color = percent > 75 ? "red" : color;
+        //console.log("total seconds: " + screen.currentTimeLimit.toString()+"  percent: "+ percent);
+        presentationScreen.find('.screenTime').attr('style', 'width:' + percent.toString() + '%; background-color:' + color+';' );
+        presentationScreen.find('.screenTimer').attr('style', 'height:' + height + ';');
+    }
+
+    this.handleGameOver = function (screen, gameOver) {
+        if (gameOver && !hasGameOvered) {
+            hasGameOvered = true;
+            var presentationScreen = $('#' + screen.id.toString());
+            $(presentationScreen).focus();
+            $(presentationScreen).addClass('screenGameOver');
+            $("#screensContainer").attr('style', 'opacity:0;');
+            var spot = "";
+            setTimeout(this.showGameOver.bind(this), 2000);
+        }
+    }
+    this.showGameOver = function () {
+        $(".gameOver").attr('style', 'display:inline-box; opacity:1;');
+        $("#screensContainer").attr('style', 'display:none;');
+        setTimeout(this.hideGameOver.bind(this), 2000);
+    }
+    this.hideGameOver = function () {
+        $(".gameOver").attr('style', 'opacity:0');
+        setTimeout(this.refresh.bind(this),2000)
+    }
+    this.refresh = function () {
+        location.reload();
+    }
+
 }

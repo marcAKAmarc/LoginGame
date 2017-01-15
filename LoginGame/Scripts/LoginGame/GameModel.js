@@ -1,9 +1,12 @@
 ﻿function Game() {
+
     var _self = this;
     this.numberOfLoginScreens = 0;
     this.layout = new Layout();
     this.loginScreens = [];
-
+    this.gameOver = false;
+    this.successfulLogins = 0;
+    this.AddScreenDelay = 25;
     //this.AddLoginScreen = function (screen) {
     //    this.loginScreens.push(screen);
     //    this.numberOfLoginScreens += 1;
@@ -44,10 +47,32 @@ function PasswordRules() {
     this.passwordSymbolsRequired = 0;
     this.passwordNumbersRequired = 0;
     this.passwordPreviousChecks = 5;
+
+    this.randomize = function () {
+        this.passwordMinimumLength = Math.ceil(Math.random()*8); //at least one, at max 15
+
+        var multiples = false;
+        if (Math.random() > .97)
+            multiples = true;
+        
+        if (multiples) {
+            this.passwordLowerCasesRequired = Math.ceil(Math.random() * this.passwordMinimumLength);
+            this.passwordUpperCasesRequired = Math.ceil(Math.random() * (this.passwordMinimumLength - (this.passwordLowerCasesRequired)));
+            this.passwordSymbolsRequired = Math.ceil(Math.random() * (this.passwordMinimumLength - (this.passwordLowerCasesRequired + this.passwordUpperCasesRequired)));
+            this.passwordNumbersRequired = Math.ceil(Math.random() * (this.passwordMinimumLength - (this.passwordLowerCasesRequired + this.passwordUpperCasesRequired + this.passwordSymbolsRequired)));
+        } else {
+            this.passwordLowerCasesRequired = Math.random() > .5 ? 1 : 0;
+            this.passwordUpperCasesRequired = Math.random() > .5 ? 1 : 0;
+            this.passwordSymbolsRequired = Math.random() > .9 ? 1 : 0;
+            this.passwordNumbersRequired = Math.random() > .95 ? 1 : 0;
+        }
+
+        this.passwordPreviousChecks = Math.random() > .95 ? Math.ceil(Math.random()*50) : Math.ceil(Math.random()*5);
+    }
 }
 function LoginRules() {
     //if lockIpAddress set to true, we will lock people out even if they don't remember their username.
-    this.lockIpAddress = true;
+    this.lockIpAddress = false; // true;
     this.exposeUsernameIncorrect = true;
 }
 function Policy() {
@@ -59,6 +84,16 @@ function Policy() {
     this.minimumUsernameLength = 8; //only considered if not of email type
     this.attemptsMade = 0;
     this.historicalCredentials = [];
+
+    this.randomize = function () {
+        this.resetAfterSeconds = (Math.random() * 60) + 120;
+        this.passwordRules = new PasswordRules();
+        this.passwordRules.randomize();
+        this.loginRules = new LoginRules();
+        this.attemptsBeforeLockout = Math.ceil(Math.random() * 5) + 2;
+        this.usernameType = Math.random() < .95 ? "username" : "email";
+        this.minimumUsernameLength = Math.ceil(Math.random() * 8); //only considered if not of email type
+    }
     //this.Validate = function (username, password) {
     //    var errors = [];
     //    var usernameErrors = this.ValidateUsername(username);
@@ -114,9 +149,11 @@ var Screen = function (id) {
     this.initialized = false;
     this.state = "Register";
     this.policy = new Policy();
+    this.policy.randomize();
     this.credentials = new Credentials();
-    this.loginDelay = 10;
-
+    this.loginDelay = 5;
+    this.timeLimit = 120;
+    this.currentTimeLimit = 0;
     //this.SubmitRegisterViewModel = function (vm) {
     //    this.credentials.userName = vm.username;
     //    this.credentials.passWord = vm.password;

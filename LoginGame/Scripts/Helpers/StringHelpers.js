@@ -1,7 +1,7 @@
 ﻿//regex HELPERS
 var StringHelper = StringHelper || {
      validateEmail : function (email) {
-        var filter = new RegExp('^(?=[A-Z0-9][A-Z0-9@@._%+-]{5,253}+$)[A-Z0-9._%+-]{1,64}+@(?:(?=[A-Z0-9-]{1,63}+\.)[A-Z0-9]++(?:-[A-Z0-9]++)*+\.){1,8}+[A-Z]{2,63}+$');
+         var filter = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return filter.test(email);
     },
     validateHasNumber: function(string){

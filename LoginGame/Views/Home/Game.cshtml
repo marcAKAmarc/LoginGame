@@ -227,6 +227,7 @@
             var matchingScreen = gameController.GetLoginScreen(gameModel, $(screenContainer).attr('id'));
 
             presentationModel.SubmitLoginPanel(screenContainer, matchingScreen, loginpanel);
+
             presentationModel.UpdateDisplay(gameModel);
         }
         if ($(button).parents('.resetPanel').length > 0) {

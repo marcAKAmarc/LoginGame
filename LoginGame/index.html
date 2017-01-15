@@ -22,8 +22,20 @@
     <script src="Scripts/pieTimer.js"></script>
     <div id="hiddenLayout" style="display:none">
         <div class="screenContainer text-center" style="width:0%">
-
+            <div class="overallTime">
+                <div class="row">
+                    <div class="col-xs-2">
+                    </div>
+                    <div class="col-xs-8">
+                        <div class="row screenTimer">
+                            <div class="screenTime">
+                            </div>
+                        </div>
+                    </div>                   
+                </div>
+            </div>
             <div class="controlsContainer registerPanel text-left" style="display:none">
+                
                 <div class="row">
                     <div class="col-xs-2">
                     </div>
@@ -111,9 +123,6 @@
                         <div class="row panelTitle">
                             Successfully logged in!
                         </div>
-                        <div class="row text-right">
-                            <div class="timer"></div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -178,7 +187,11 @@
     <div id="screensContainer">
 
     </div>
-
+    <div class="row">
+        <div class="col-md-pull-6 gameOver" style="display:none; color: red;">
+            GAME OVER...
+        </div>
+    </div>
 
     <script>
 
@@ -199,17 +212,30 @@
     });
 
     //key events
-
     var ev_X_Press = function () {
         var screen = gameController.AddLoginScreen(gameModel, new Screen(gameModel.numberOfLoginScreens));
         if (screen) {
             presentationModel.UpdateDisplay(gameModel);
-
+            setInterval(
+                updateLoginTime.bind(
+                    this,
+                    screen,
+                    gameController,
+                    gameModel,
+                    presentationModel
+                ),
+                1000
+            );
         }
     }
-    setInterval(ev_X_Press, 15000);
+    
     //ev_X_Press();
 
+    var updateLoginTime = function (screen, gameController, gameModel, presentationModel ) {
+        gameController.UpdateRemainingLoginTime(screen, gameModel);
+        presentationModel.handleGameOver(screen, gameModel.gameOver);
+        presentationModel.updateRemainingLoginTimer(screen);
+    }
     //var ev_C_Press = function () {
     //    gameController.TestResetScreen(gameModel, 0);
     //    presentationModel.UpdateDisplay(gameModel);
@@ -227,6 +253,7 @@
 
     var presentationModel = presentationModel || new Presentation(gameController, screenController, policyController);
 
+    setInterval(ev_X_Press, gameModel.AddScreenDelay *1000);
     //submit catchall
     submit = function (button) {
         var screenContainer = $(button).parents('.screenContainer');
@@ -242,7 +269,15 @@
             var loginpanel = $(screenContainer).find('.loginPanel');
             var matchingScreen = gameController.GetLoginScreen(gameModel, $(screenContainer).attr('id'));
 
-            presentationModel.SubmitLoginPanel(screenContainer, matchingScreen, loginpanel);
+            presentationModel.SubmitLoginPanel(screenContainer, matchingScreen, loginpanel, gameModel);
+            if (matchingScreen.state == 'Locked') {
+                gameModel.gameOver = true;
+                presentationModel.handleGameOver(matchingScreen, gameModel);
+            }
+            if (matchingScreen.state == 'Success') {
+                gameModel.successfulLogins += 1;
+                matchingScreen.currentTimeLimit = 0;
+            }
             presentationModel.UpdateDisplay(gameModel);
         }
         if ($(button).parents('.resetPanel').length > 0) {
