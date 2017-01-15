@@ -152,7 +152,7 @@ var Screen = function (id) {
     this.policy.randomize();
     this.credentials = new Credentials();
     this.loginDelay = 5;
-    this.timeLimit = 120;
+    this.timeLimit = 60;
     this.currentTimeLimit = 0;
     //this.SubmitRegisterViewModel = function (vm) {
     //    this.credentials.userName = vm.username;
