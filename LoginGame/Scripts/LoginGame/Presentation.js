@@ -242,7 +242,7 @@
             $(presentationScreen).addClass('screenGameOver');
             $("#screensContainer").attr('style', 'opacity:0;');
             var spot = "";
-            setTimeout(this.showGameOver.bind(this), 2000);
+            setTimeout(this.showGameOver.bind(this), 5000);
         }
     }
     this.showGameOver = function () {
