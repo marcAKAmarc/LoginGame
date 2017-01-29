@@ -1,7 +1,7 @@
 ﻿function GameController() {
     _self = this;
     this.AddLoginScreen = function (GameModel, screen) {
-        if (GameModel.numberOfLoginScreens < 9) {
+        if (GameModel.numberOfLoginScreens < GameModel.maxNumberOfLoginScreens) {
             GameModel.loginScreens.push(screen);
             GameModel.numberOfLoginScreens += 1;
             _self.UpdateLayout(GameModel);
@@ -117,17 +117,23 @@ function ScreenController() {
     this.SubmitRegisterViewModel = function (screen, vm) {
         screen.credentials.userName = vm.username;
         screen.credentials.passWord = vm.password;
-        screen.state = "Login";
+        this.gotoState(screen,"Login");
     }
 
     this.GoToResetScreen = function (gameModel, screen, callback) {
-        screen.state = "Reset";
-        if (callback)
-            callback(gameModel);
+        screen.policy.resetTimeout = true;
+        //this.gotoState(screen, "Reset");
+        //screen.state = "Reset";
+        //if (callback)
+        //    callback(gameModel);
     }
 
     this.SubmitLoginViewModel = function (screen, vm) {
-        screen.state = "Success";
+        screen.hasLoggedInSinceReset = true;
+        this.gotoState(screen, "Success");
+        if (screen.state == "Success")
+            screen.successfulLogins += 1;
+        screen.policy.hasLogginInSinceReset = true;
         //this.LoginDelayStart(screen, null, null);
     }
     this.ValidateSignIn = function (screen, username, password) {
@@ -154,7 +160,7 @@ function ScreenController() {
         if (increaseLoginAttempts) {
             screen.policy.attemptsMade += 1;
             if (screen.policy.attemptsMade >= screen.policy.attemptsBeforeLockout) {
-                screen.state = "Locked";
+                this.gotoState(screen, "Locked");
             }
         }
 
@@ -168,13 +174,15 @@ function ScreenController() {
         return errors;
     }
     this.LoginDelayStart = function (screen, callback, param) {
-        setTimeout(_self.LoginDelayOver, screen.loginDelay * 1000, { screen: screen, callback: callback, param: param });
+        setTimeout(_self.LoginDelayOver.bind(_self,{ screen: screen, callback: callback, param: param }), screen.loginDelay * 1000 );
     }
     this.LoginDelayOver = function (item) {
         if (item.screen.state == "Reset")
             return;
 
-        item.screen.state = "Login";
+        
+        this.gotoState(item.screen, "Login");
+
         if (item.callback)
             item.callback(item.param);
         //presentationModel.UpdateDisplay(gameModel);
@@ -220,7 +228,19 @@ function ScreenController() {
 
         screen.credentials.passWord = vm.newpassword;
 
-        screen.state = "Login";
+        screen.policy.resetTimeout = false;
+        screen.policy.resetTimer = null;
+        screen.policy.hasLoggedInSinceReset = false;
+        this.gotoState (screen, "Login");
+        //screen.state = "Login";
+    }
+
+    this.gotoState = function(screen, state){
+        if (screen.policy.resetTimeout && screen.hasLoggedInSinceReset){
+            screen.state = "Reset";
+        }else{
+            screen.state = state;
+        }
     }
 }
 

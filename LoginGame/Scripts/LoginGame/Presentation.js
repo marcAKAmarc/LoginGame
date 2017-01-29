@@ -185,18 +185,26 @@
 
         //if we have gotten here, we have succeeded
         screenController.SubmitLoginViewModel(matchingScreen, vm);
-        screenController.LoginDelayStart(matchingScreen, this.UpdateDisplay, gameModel);
+        if (matchingScreen.state == "Success") {
+            screenController.LoginDelayStart(matchingScreen, this.UpdateDisplay, gameModel);
+            
+            if(matchingScreen.policy.resetTimer == null){
+                //start reset timer
+                matchingScreen.resetTimer = setTimeout(
+                   screenController.GoToResetScreen.bind(
+                       screenController,
+                       gameModel,
+                       matchingScreen
+                   ),
+                   matchingScreen.policy.resetAfterSeconds * 1000,
+                   presentationModel.UpdateDisplay
+               );
+            }
+            
+        }
+
         ClearLoginViewModelFromScreenContainer(screenContainer);
-        //start reset timer
-        setTimeout(
-            screenController.GoToResetScreen.bind(
-                screenController,
-                gameModel,
-                matchingScreen
-            ),
-            matchingScreen.policy.resetAfterSeconds * 1000,
-            presentationModel.UpdateDisplay
-        );
+        
         return;
     }
 
