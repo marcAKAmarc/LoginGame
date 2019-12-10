@@ -8,7 +8,7 @@
     this.results = {};
     this.gameOver = false;
     this.successfulLogins = 0;
-    this.AddScreenDelay = 10;
+    this.AddScreenDelay = 30;
 }
 
 //Screen

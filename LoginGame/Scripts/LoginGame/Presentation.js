@@ -1,7 +1,6 @@
 ﻿function Presentation(_gameController, _screenController, _policyController) {
     var _self = this;
     var hasGameOvered = false;
-    //var gameController = _gameController;
     var screenController = _screenController;
     var policyController = _policyController;
 

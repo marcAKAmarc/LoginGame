@@ -35,48 +35,49 @@
                 </div>
             </div>
             <div class="controlsContainer registerPanel text-left" style="display:none">
-                
-                <div class="row">
-                    <div class="col-xs-2">
+                <!--<form onsubmit="submit(this); return false;">-->
+                    <div class="row">
+                        <div class="col-xs-2">
+                        </div>
+                        <div class="col-xs-8">
+                            <div class="row panelTitle">
+                                Register New Account
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    Username:
+                                </div>
+                                <div class="col-xs-6">
+                                    <input type="text" class="inputUsername" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    Password:
+                                </div>
+                                <div class="col-xs-6">
+                                    <input type="password" class="inputPassword" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    Confirm Password:
+                                </div>
+                                <div class="col-xs-6">
+                                    <input type="password" class="inputConfirmPassword" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 alert alert-danger errors" style="display:none"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 text-right">
+                                    <button type="button" onclick="submit(this)">Submit</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-xs-8">
-                        <div class="row panelTitle">
-                            Register New Account
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                Username:
-                            </div>
-                            <div class="col-xs-6">
-                                <input type="text" class="inputUsername" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                Password:
-                            </div>
-                            <div class="col-xs-6">
-                                <input type="password" class="inputPassword" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                Confirm Password:
-                            </div>
-                            <div class="col-xs-6">
-                                <input type="password" class="inputConfirmPassword" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12 alert alert-danger errors" style="display:none"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12 text-right">
-                                <button type="button" onclick="submit(this)">Submit</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!--</form>-->
             </div>
 
             <div class="controlsContainer loginPanel text-left" style="display:none">
@@ -203,6 +204,9 @@
 
     //key bindings
     $(document).bind('keydown', function (e) {
+        if (e.keyCode == 13) {
+            submit(document.activeElement);
+        }
         if (e.keyCode == 88) { //x
             //ev_X_Press();
         }
@@ -247,13 +251,12 @@
 
     //start the game!
     var gameModel = gameModel || new Game();
-    var gameController = new GameController();
     var screenController = new ScreenController();
     var policyController = new PolicyController();
+    var presentationModel = presentationModel || new Presentation(screenController, policyController);
+    var gameController = new GameController(gameModel, screenController, policyController, presentationModel);
+    var newWindowInterval = setInterval(ev_X_Press, gameModel.AddScreenDelay * 1000);
 
-    var presentationModel = presentationModel || new Presentation(gameController, screenController, policyController);
-
-    setInterval(ev_X_Press, gameModel.AddScreenDelay *1000);
     //submit catchall
     submit = function (button) {
         var screenContainer = $(button).parents('.screenContainer');
@@ -277,7 +280,15 @@
             if (matchingScreen.state == 'Success') {
                 gameModel.successfulLogins += 1;
                 matchingScreen.currentTimeLimit = 0;
+
+                //spawn another login in two seconds
+                if (gameModel.loginScreens.length < gameModel.maxNumberOfLoginScreens) {
+                    clearInterval(newWindowInterval);
+                    setTimeout(ev_X_Press, 1000);
+                    newWindowInterval = setInterval(ev_X_Press, (gameModel.AddScreenDelay * 1000) + 1000);
+                }
             }
+            
             presentationModel.UpdateDisplay(gameModel);
         }
         if ($(button).parents('.resetPanel').length > 0) {
