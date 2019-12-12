@@ -1,12 +1,16 @@
 ﻿function Presentation(_gameController, _screenController, _policyController) {
     var _self = this;
     var hasGameOvered = false;
+    var gameController = _gameController;
     var screenController = _screenController;
     var policyController = _policyController;
 
     var ScreenContainers = [];
     this.GetScreenHeightStringFromPercent = function (percent) {
         return $(window).height() * (percent / 100);
+    }
+    this.SetGameController = function (_gameController) {
+        gameController = _gameController;
     }
     this.UpdateDisplay = function (gameModel) {
 
@@ -52,6 +56,12 @@
             var copyDiv = $('#hiddenLayout>:first-child').clone();
             copyDiv.attr('id', unmatchedGameModelScreens[i].id);
             $('#screensContainer').append(copyDiv);
+            var newbuttons = $('#screensContainer #' + unmatchedGameModelScreens[i].id).find('.btn-submit-button');
+            for (var j = 0; j < newbuttons.length; j++) {
+                $(newbuttons[j]).click(
+                        gameController.Submit.bind(gameController,newbuttons[j])
+                );
+            }
             ScreenContainers.push($('#' + unmatchedGameModelScreens[i].id.toString()));
         }
     }
@@ -265,4 +275,33 @@
         location.reload();
     }
 
+    this.getScreenContainerFromElement = function (e) {
+        return $(e).parents('.screenContainer')[0];
+    }
+
+    this.getElementInRegistrationPanel = function (e) {
+        return $(e).parents('.registerPanel').length > 0;
+    }
+
+    this.getRegistrationPanelFromScreenContainer = function (e) {
+        return $(e).find('.registerPanel');
+    }
+
+    this.getScreenContainerScreenId = function (e) {
+        return $(e).attr('id');
+    }
+
+    this.getElementInLoginPanel = function (e) {
+        return $(e).parents('.loginPanel').length > 0;
+    }
+
+    this.getLoginPanelFromScreenContainer = function (e) {
+        return $(e).find('.loginPanel');
+    }
+    this.getElementInResetPanel = function (e) {
+        return $(e).parents('.resetPanel').length > 0;
+    }
+    this.GetResetPanelFromScreenContainer = function (e) {
+        return $(e).find('.resetPanel');
+    }
 }

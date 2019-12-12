@@ -1,5 +1,19 @@
-﻿function GameController() {
+﻿function GameController(
+    _gameModel,
+    _screenController,
+    _policyController,
+    _presenetationModel
+) {
     _self = this;
+    this.gameModel = _gameModel;
+    this.screenController = _screenController;
+    this.policyController = _policyController;
+    this.presentationModel = _presenetationModel;
+
+    this.timeLastScreenAdded = new Date('1979-01-01');
+    this.timeLastScreenUpdate = new Date('1979-01-01');
+    this.stepTimer = null;
+
     this.AddLoginScreen = function (GameModel, screen) {
         if (GameModel.numberOfLoginScreens < GameModel.maxNumberOfLoginScreens) {
             GameModel.loginScreens.push(screen);
@@ -36,6 +50,97 @@
         }
         return loginScreen.currentTimeLimit;
     }
+
+    this.Step = function () {
+        _self.HandleScreenAdd();
+        _self.HandleUpdateScreens();
+    }
+    this.HandleUpdateScreens = function () {
+        if (this.timeLastScreenUpdate.getAddSeconds(1) < new Date()) {
+            for (var i = 0; i < this.gameModel.loginScreens.length; i++) {
+                var screen = this.gameModel.loginScreens[i];
+                this.UpdateRemainingLoginTime(screen, gameModel);
+                presentationModel.handleGameOver(screen, gameModel.gameOver);
+                presentationModel.updateRemainingLoginTimer(screen);
+            }
+            this.timeLastScreenUpdate = new Date();
+        }
+    }
+    this.HandleScreenAdd = function () {
+        //if it is time to add a new screen
+        if (this.timeLastScreenAdded.getAddSeconds(gameModel.AddScreenDelay) < new Date()) {
+            debugger;
+            var screen = gameController.AddLoginScreen(gameModel, new Screen(gameModel.numberOfLoginScreens));
+            if (screen) {
+                presentationModel.UpdateDisplay(gameModel);
+            }
+            this.timeLastScreenAdded = new Date();
+        }
+    }
+
+    this.StartGame = function () {
+        this.stepTimer = setInterval(this.Step, 16);
+    }
+
+    this.Submit = function (e) {
+        var button = e;
+        var ScreenContainer = presentationModel.getScreenContainerFromElement(button);
+
+        handleRegistrationPanelSubmit(button, ScreenContainer);
+        handleLoginPanelSubmit(button, ScreenContainer);
+        handleResetPanelSubmit(button, ScreenContainer);
+    }
+
+    var handleRegistrationPanelSubmit = function (button, screenContainer) {
+        if (presentationModel.getElementInRegistrationPanel(button)) {
+            var registrationpanel = presentationModel.getRegistrationPanelFromScreenContainer(screenContainer);
+            var matchingScreen = this.GetLoginScreen(gameModel, presentationModel.getScreenContainerScreenId(screenContainer));
+
+            presentationModel.SubmitRegisterPanel(screenContainer, matchingScreen, registerpanel);
+            presentationModel.UpdateDisplay(gameModel);
+        }
+    };
+
+    var handleLoginPanelSubmit = function (button, screenContainer) {
+        if (presentationModel.getElementInLoginPanel(button)) {
+            var loginpanel = presentationModel.getLoginPanelFromScreenContainer(screenContainer);
+            var matchingScreen = this.GetLoginScreen(gameModel, presentationModel.getScreenContainerScreenId(screenContainer));
+
+            presentationModel.SubmitLoginPanel(screenContainer, matchingScreen, loginpanel, gameModel);
+            if (matchingScreen.state == 'Locked') {
+                gameModel.gameOver = true;
+                presentationModel.handleGameOver(matchingScreen, gameModel);
+            }
+            if (matchingScreen.state == 'Success') {
+                gameModel.successfulLogins += 1;
+                matchingScreen.currentTimeLimit = 0;
+
+                //spawn another login in two seconds
+                if (gameModel.loginScreens.length < gameModel.maxNumberOfLoginScreens) {
+                    clearInterval(newWindowInterval);
+                    setTimeout(ev_X_Press, 1000);
+                    newWindowInterval = setInterval(ev_X_Press, (gameModel.AddScreenDelay * 1000) + 1000);
+                }
+            }
+            presentationModel.UpdateDisplay(gameModel);
+        }
+    };
+
+    var handleResetPanelSubmit = function (button, screenContainer) {
+        if (presentationModel.getElementInResetPanel(button)) {
+            var resetpanel = presentationModel.GetResetPanelFromScreenContainer(screenContainer);
+            var matchingScreen = gameController.GetLoginScreen(gameModel, $(screenContainer).attr('id'));
+
+            presentationModel.SubmitResetPanel(screenContainer, matchingScreen, resetpanel);
+            presentationModel.UpdateDisplay(gameModel);
+        }
+    };
+
+    $(document).bind('keydown', function (e) {
+        if (e.keyCode == 13) {
+            this.Submit(document.activeElement);
+        }
+    }.bind(this));
 }
 
 function PolicyController() {

@@ -18,32 +18,40 @@
     <script src="Scripts/LoginGame/Controllers.js"></script>
     <script src="Scripts/LoginGame/ViewModels.js"></script>
     <script src="Scripts/LoginGame/Presentation.js"></script>
-    <script src="Scripts/Helpers/StringHelpers.js"></script>
+    <script src="Scripts/LoginGame/Helpers/StringHelpers.js"></script>
+    <script src="Scripts/LoginGame/Helpers/DateHelpers.js"></script></script>    
     <script src="Scripts/pieTimer.js"></script>
     <div id="hiddenLayout" style="display:none">
+
         <div class="screenContainer text-center" style="width:0%">
-            <div class="overallTime">
-                <div class="row">
-                    <div class="col-xs-2">
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="row screenTimer">
-                            <div class="screenTime">
-                            </div>
-                        </div>
-                    </div>                   
-                </div>
-            </div>
-            <div class="controlsContainer registerPanel text-left" style="display:none">
-                <!--<form onsubmit="submit(this); return false;">-->
+                <div class="overallTime">
                     <div class="row">
                         <div class="col-xs-2">
                         </div>
                         <div class="col-xs-8">
-                            <div class="row panelTitle">
+                            <div class="row screenTimer">
+                                <div class="screenTime">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="brandings row">
+                    <div class="col-xs-2"></div>
+                    <div class="bankBranding col-xs-8">
+                        <img class="logo img-responsive" src="Content/bankify_logo.png" />
+                    </div>
+                </div>
+                <div class="controlsContainer registerPanel text-left" style="display:none">
+                    <!--<form onsubmit="submit(this); return false;">-->
+                    <div class="row">
+                        <div class="col-xs-2">
+                        </div>
+                        <div class="col-xs-8">
+                            <div class="row form-row panelTitle">
                                 Register New Account
                             </div>
-                            <div class="row">
+                            <div class="row form-row">
                                 <div class="col-xs-6">
                                     Username:
                                 </div>
@@ -51,7 +59,7 @@
                                     <input type="text" class="inputUsername" />
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row form-row">
                                 <div class="col-xs-6">
                                     Password:
                                 </div>
@@ -59,7 +67,7 @@
                                     <input type="password" class="inputPassword" />
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row form-row">
                                 <div class="col-xs-6">
                                     Confirm Password:
                                 </div>
@@ -67,122 +75,123 @@
                                     <input type="password" class="inputConfirmPassword" />
                                 </div>
                             </div>
+                            <div class="row form-row">
+                                <div class="col-xs-12 alert alert-danger errors" style="display:none"></div>
+                            </div>
+                            <div class="row form-row">
+                                <div class="col-xs-12 text-right">
+                                    <button class="btn-submit-button" type="button">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--</form>-->
+                </div>
+
+                <div class="controlsContainer loginPanel text-left" style="display:none">
+                    <div class="row">
+                        <div class="col-xs-2">
+                        </div>
+                        <div class="col-xs-8">
+                            <div class="row panelTitle">
+                                Login
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    Username:
+                                </div>
+                                <div class="col-xs-6">
+                                    <input class="inputUsername" type="text" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    Password:
+                                </div>
+                                <div class="col-xs-6">
+                                    <input class="inputPassword" type="password" />
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-xs-12 alert alert-danger errors" style="display:none"></div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-12 text-right">
-                                    <button type="button" onclick="submit(this)">Submit</button>
+                                    <button class="btn-submit-button" type="button" onclick="submit(this)">Login</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                <!--</form>-->
-            </div>
+                </div>
 
-            <div class="controlsContainer loginPanel text-left" style="display:none">
-                <div class="row">
-                    <div class="col-xs-2">
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="row panelTitle">
-                            Login
+                <div class="controlsContainer successPanel text-left" style="display:none">
+                    <div class="row">
+                        <div class="col-xs-2">
                         </div>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                Username:
-                            </div>
-                            <div class="col-xs-6">
-                                <input class="inputUsername" type="text" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                Password:
-                            </div>
-                            <div class="col-xs-6">
-                                <input class="inputPassword" type="password" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12 alert alert-danger errors" style="display:none"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12 text-right">
-                                <button type="button" onclick="submit(this)">Login</button>
+                        <div class="col-xs-8">
+                            <div class="row panelTitle">
+                                Successfully logged in!
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="controlsContainer successPanel text-left" style="display:none">
-                <div class="row">
-                    <div class="col-xs-2">
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="row panelTitle">
-                            Successfully logged in!
+                <div class="controlsContainer lockedPanel text-left" style="display:none">
+                    <div class="row">
+                        <div class="col-xs-2">
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="controlsContainer lockedPanel text-left" style="display:none">
-                <div class="row">
-                    <div class="col-xs-2">
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="row panelTitle">
-                            You have been locked out!
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="controlsContainer resetPanel text-left" style="display:none">
-                <div class="row">
-                    <div class="col-xs-2">
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="row panelTitle">
-                            Reset Password
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                Old Password:
-                            </div>
-                            <div class="col-xs-6">
-                                <input class="inputOldPassword" type="password" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                New Password:
-                            </div>
-                            <div class="col-xs-6">
-                                <input class="inputNewPassword" type="password" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                Confirm New Password:
-                            </div>
-                            <div class="col-xs-6">
-                                <input class="inputConfirmPassword" type="password" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12 alert alert-danger errors" style="display:none"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12 text-right">
-                                <button type="button" onclick="submit(this)">Reset</button>
+                        <div class="col-xs-8">
+                            <div class="row panelTitle">
+                                You have been locked out!
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+
+                <div class="controlsContainer resetPanel text-left" style="display:none">
+                    <div class="row">
+                        <div class="col-xs-2">
+                        </div>
+                        <div class="col-xs-8">
+                            <div class="row panelTitle">
+                                Reset Password
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    Old Password:
+                                </div>
+                                <div class="col-xs-6">
+                                    <input class="inputOldPassword" type="password" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    New Password:
+                                </div>
+                                <div class="col-xs-6">
+                                    <input class="inputNewPassword" type="password" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    Confirm New Password:
+                                </div>
+                                <div class="col-xs-6">
+                                    <input class="inputConfirmPassword" type="password" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 alert alert-danger errors" style="display:none"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 text-right">
+                                    <button class="btn-submit-button" type="button" onclick="submit(this)">Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
         </div>
     </div>
     <div id="screensContainer">
@@ -196,113 +205,24 @@
 
     <script>
 
+        //key events
+        //var triggerReset = function(id){
+        //    gameController.TestResetScreen(gameModel, id);
+        //    presentationModel.UpdateDisplay(gameModel);
+        //}
 
-    //CONSTANTS
-    var gameStates = ["Ready", "Active", "GameOver"]
-    var screenStates = ["Register", "Login", "Success", "Locked", "Reset"]
+        //start the game!
+        var gameModel = gameModel || new Game();
+        var screenController = new ScreenController();
+        var policyController = new PolicyController();
+        var presentationModel = presentationModel || new Presentation(screenController, policyController);
+        var gameController = new GameController(gameModel, screenController, policyController, presentationModel);
+        presentationModel.SetGameController(gameController);
 
 
-    //key bindings
-    $(document).bind('keydown', function (e) {
-        if (e.keyCode == 13) {
-            submit(document.activeElement);
-        }
-        if (e.keyCode == 88) { //x
-            //ev_X_Press();
-        }
-        if (e.keyCode == 67) { //x
-            //ev_C_Press();
-        }
-    });
-
-    //key events
-    var ev_X_Press = function () {
-        var screen = gameController.AddLoginScreen(gameModel, new Screen(gameModel.numberOfLoginScreens));
-        if (screen) {
-            presentationModel.UpdateDisplay(gameModel);
-            setInterval(
-                updateLoginTime.bind(
-                    this,
-                    screen,
-                    gameController,
-                    gameModel,
-                    presentationModel
-                ),
-                1000
-            );
-        }
-    }
-    
-    //ev_X_Press();
-
-    var updateLoginTime = function (screen, gameController, gameModel, presentationModel ) {
-        gameController.UpdateRemainingLoginTime(screen, gameModel);
-        presentationModel.handleGameOver(screen, gameModel.gameOver);
-        presentationModel.updateRemainingLoginTimer(screen);
-    }
-    //var ev_C_Press = function () {
-    //    gameController.TestResetScreen(gameModel, 0);
-    //    presentationModel.UpdateDisplay(gameModel);
-    //}
-    var triggerReset = function(id){
-        gameController.TestResetScreen(gameModel, id);
-        presentationModel.UpdateDisplay(gameModel);
-    }
-
-    //start the game!
-    var gameModel = gameModel || new Game();
-    var screenController = new ScreenController();
-    var policyController = new PolicyController();
-    var presentationModel = presentationModel || new Presentation(screenController, policyController);
-    var gameController = new GameController(gameModel, screenController, policyController, presentationModel);
-    var newWindowInterval = setInterval(ev_X_Press, gameModel.AddScreenDelay * 1000);
-
-    //submit catchall
-    submit = function (button) {
-        var screenContainer = $(button).parents('.screenContainer');
-        var result;
-        if ($(button).parents('.registerPanel').length > 0) {
-            var registerpanel = $(screenContainer).find('.registerPanel');
-            var matchingScreen = gameController.GetLoginScreen(gameModel, $(screenContainer).attr('id'));
-
-            presentationModel.SubmitRegisterPanel(screenContainer, matchingScreen, registerpanel);
-            presentationModel.UpdateDisplay(gameModel);
-        }
-        if ($(button).parents('.loginPanel').length > 0) {
-            var loginpanel = $(screenContainer).find('.loginPanel');
-            var matchingScreen = gameController.GetLoginScreen(gameModel, $(screenContainer).attr('id'));
-
-            presentationModel.SubmitLoginPanel(screenContainer, matchingScreen, loginpanel, gameModel);
-            if (matchingScreen.state == 'Locked') {
-                gameModel.gameOver = true;
-                presentationModel.handleGameOver(matchingScreen, gameModel);
-            }
-            if (matchingScreen.state == 'Success') {
-                gameModel.successfulLogins += 1;
-                matchingScreen.currentTimeLimit = 0;
-
-                //spawn another login in two seconds
-                if (gameModel.loginScreens.length < gameModel.maxNumberOfLoginScreens) {
-                    clearInterval(newWindowInterval);
-                    setTimeout(ev_X_Press, 1000);
-                    newWindowInterval = setInterval(ev_X_Press, (gameModel.AddScreenDelay * 1000) + 1000);
-                }
-            }
-            
-            presentationModel.UpdateDisplay(gameModel);
-        }
-        if ($(button).parents('.resetPanel').length > 0) {
-            var resetpanel = $(screenContainer).find('.resetPanel');
-            var matchingScreen = gameController.GetLoginScreen(gameModel, $(screenContainer).attr('id'));
-
-            presentationModel.SubmitResetPanel(screenContainer, matchingScreen, resetpanel);
-            presentationModel.UpdateDisplay(gameModel);
-        }
-    }
-
-    $('document').ready(function () {
-        ev_X_Press();
-    });
+        $('document').ready(function () {
+            gameController.StartGame();
+        });
 
     </script>
 </body>

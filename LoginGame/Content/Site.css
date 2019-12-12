@@ -17,30 +17,39 @@
 }
 
 /* Set width on the form input elements since they're 100% wide by default */
-input,
+/*input,
 select,
 textarea {
     max-width: 280px;
+}*/
+input,
+select,
+textarea {
+    /**width:100%;*/
+    max-width: 280px;
+    float:right;
 }
-
-.row{
+.row {
     padding: 10px
 }
 
 .screenContainer{
     display: inline-block;  
 }
+.form-row{
+    max-width:600px;
+}
 
-.controlsContainer{
-      position: relative;
-      top: 50%;
-      transform: translateY(-50%);
-      width:100%;
-      /*white-space: nowrap;
+.controlsContainer {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    /*white-space: nowrap;
       text-wrap: none;
       overflow-wrap: normal;
       overflow:hidden;*/
-      transition: all 1s linear;
+    transition: all 1s linear;
 }
 
 .alert{
@@ -135,4 +144,9 @@ textarea {
     width: 20%;
     color: red;
     transition: all 2s linear;
+}
+
+.logo{
+    /*margin: 0 auto;*/
+    max-height:128px;
 }
