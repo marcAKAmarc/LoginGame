@@ -10,6 +10,8 @@
     this.policyController = _policyController;
     this.presentationModel = _presenetationModel;
 
+    this.brandScreens = new BrandScreens();
+
     this.timeLastScreenAdded = new Date('1979-01-01');
     this.timeLastScreenUpdate = new Date('1979-01-01');
     this.stepTimer = null;
@@ -22,6 +24,14 @@
             return screen;
         } else
             return null;
+    }
+    this.RemoveLoginScreen = function (GameModel, screen) {
+        for (var i = 0; i < GameModel.loginScreens.length; i++) {
+            if (GameModel.loginScreens[i].id == screen.id) {
+                GameModel.loginScreens.splice(i, 1);
+                break;
+            }
+        }
     }
     this.GetLoginScreen = function (GameModel, id) {
         for (var i = 0; i < GameModel.loginScreens.length; i++) {
@@ -70,7 +80,7 @@
         //if it is time to add a new screen
         if (this.timeLastScreenAdded.getAddSeconds(gameModel.AddScreenDelay) < new Date()) {
             debugger;
-            var screen = gameController.AddLoginScreen(gameModel, new Screen(gameModel.numberOfLoginScreens));
+            var screen = gameController.AddLoginScreen(gameModel, this.brandScreens.GetNext());
             if (screen) {
                 presentationModel.UpdateDisplay(gameModel);
             }

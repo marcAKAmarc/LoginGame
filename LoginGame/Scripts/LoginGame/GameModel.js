@@ -5,6 +5,7 @@
     this.maxNumberOfLoginScreens = 3;
     this.layout = new Layout();
     this.loginScreens = [];
+    this.loginScreenQueue = [];
     this.results = {};
     this.gameOver = false;
     this.successfulLogins = 0;
@@ -20,7 +21,7 @@ function Credentials() {
     this.passWord = "";
 }
 function PasswordRules() {
-    this.passwordMinimumLength = 5;
+    this.passwordMinimumLength = 8;
     this.passwordLowerCasesRequired = 1;
     this.passwordUpperCasesRequired = 0;
     this.passwordSymbolsRequired = 0;
@@ -28,10 +29,10 @@ function PasswordRules() {
     this.passwordPreviousChecks = 7;
 
     this.randomize = function () {
-        this.passwordMinimumLength = Math.ceil(Math.random()*8); //at least one, at max 15
+        this.passwordMinimumLength = Math.ceil(5+Math.random()*8); //at least one, at max 15
 
         var multiples = false;
-        if (Math.random() > .97)
+        if (Math.random() > .95)
             multiples = true;
         
         if (multiples) {
@@ -68,10 +69,11 @@ function Policy() {
     this.historicalCredentials = [];
 
     this.randomize = function () {
-        this.resetAfterSeconds = (Math.random() * 180)+30;
+        this.resetAfterSeconds = (Math.random() * 180) + 30;
+        this.passwordRules.randomize();
     }
 }
-var Screen = function (id) {
+var Screen = function (id, brand, image) {
     this.id = id;
     this.initialized = false;
     this.state = "Register";
@@ -82,8 +84,39 @@ var Screen = function (id) {
     this.timeLimit = 60;
     this.currentTimeLimit = 0;
     this.successfulLogins = 0;
+    this.brand = 'Bankify',
+    this.image = '/Content/bankify_logo.png'
+}
+
+var BrandScreens = function () {
+    var current = 0;
+    this.Library = [
+        new Screen(1,'Bankify', '/Content/bankify_logo.png', new Screen() ),
+new Screen(2, 'Churchr', '/Content/churchr_logo.png', new Screen() ),
+    new Screen(3, 'Copsy', '/Content/copsy_logo_alternative.png', new Screen() ),
+    new Screen(4, 'Fmail', '/Content/fmail_logo.png', new Screen() ),
+new Screen(5, 'Government', '/Content/government_logo.png', new Screen()),
+    new Screen(6, 'Nutrily', '/Content/nutrily-logo.png', new Screen()),
+    new Screen(7, 'Repairdog', '/Content/repairdog_logo.png', new Screen())
+    ]
+    this.Bankify = this.Library[0];
+    this.Churchr = this.Library[1];
+    this.Copsy = this.Library[2];
+    this.Fmail = this.Library[3];
+    this.Government = this.Library[4];
+    this.Nutrily = this.Library[5];
+    this.Repairdog = this.Library[6];
+
+    this.GetNext = function () {
+        var screen = this.Library[current];
+        current += 1;
+        return screen;
+    }
+}
+var BrandScreen = function (_brand, _brandImage, _screen) {
 
 }
+
 
 //Layout
 // ScreenLayout

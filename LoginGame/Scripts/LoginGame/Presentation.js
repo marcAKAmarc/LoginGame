@@ -18,6 +18,8 @@
 
         _self.AddScreens(updateableitems.unmatchedGameModelScreens);
 
+        _self.RemoveScreens(updateableitems.unmatchedScreenContainers);
+
         _self.AnimateSizeUpdate(gameModel);
 
         updateableitems = _self.getUpdatableItems(gameModel);
@@ -31,6 +33,7 @@
         var matchedScreenContainers = [];
         var matchedGameModelScreens = [];
         var unmatchedGameModelScreens = [];
+        var unmatchedScreenContainers = [];
         for (var i = 0; i < gameModel.loginScreens.length; i++) {
             var matched = false;
             for (var j = 0; j < ScreenContainers.length; j++) {
@@ -44,10 +47,23 @@
             if (matched != true)
                 unmatchedGameModelScreens.push(gameModel.loginScreens[i]);
         }
+        for (var i = 0; i < ScreenContainers.length; i++) {
+            var matched = false;
+            for (var j = 0; j < gameModel.loginScreens.length; i++) {
+                if (ScreenContainers[i][0].id == gameModel.loginScreens[j].id.toString()) {
+                    matched = true;
+                    break;
+                }
+                if (!matched) {
+                    unmatchedScreenContainers.push(ScreenContainers[i]);
+                }
+            }
+        }
         return {
             matchedScreenContainers: matchedScreenContainers,
             matchedGameModelScreens: matchedGameModelScreens,
-            unmatchedGameModelScreens: unmatchedGameModelScreens
+            unmatchedGameModelScreens: unmatchedGameModelScreens,
+            unmatchedScreenContainers: unmatchedScreenContainers
         }
     }
 
@@ -63,6 +79,17 @@
                 );
             }
             ScreenContainers.push($('#' + unmatchedGameModelScreens[i].id.toString()));
+        }
+    }
+    this.RemoveScreens = function (unmatchedScreenContainers) {
+        for (var i = 0; i < unmatchedScreenContainers.length; i++) {
+            $('#' + unmatchedScreenContainers[i][0].id.toString()).hide(250);
+            setTimeout(
+                function () {
+                    $('#' + unmatchedScreenContainers[i][0].id.toString()).remove()
+                },
+                250
+            )
         }
     }
 
